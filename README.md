@@ -74,4 +74,4 @@ Use setting menu to config button or choose QRCode Scanner to scan QRCode below 
 
 Now you can play your robot. see robot in action at [https://www.youtube.com/watch?v=OoDke587s8s](https://www.youtube.com/watch?v=OoDke587s8s)
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/OoDke587s8s" frameborder="0" allowfullscreen></iframe>
+
