@@ -1,6 +1,6 @@
 #Arduino Quadruped Robot
 
-Arduino Quadruped Robot the project delivered from upstream project [RegisHsu](http://goo.gl/H1vvwW)'s spider robot. This project has been redesigned in 3d printed parts eg: didn't glue servo holder with tibia and fumer, resize body to fit [12300 LIPO battery](http://goo.gl/VmvYhv). You don't need bluetooth remote control anymore, you can control robot, using [Android App Bluetooth Joystick](https://github.com/anoochit/android-robot-bt-joypad) instead, [install from Google PlayStore](https://goo.gl/MF46JS).
+Arduino Quadruped Robot the project delivered from upstream project [RegisHsu](http://goo.gl/H1vvwW)'s spider robot. This project has been redesigned in 3d printed parts eg: didn't glue servo holder with tibia and fumer, resize body to fit [12300 LIPO battery](http://goo.gl/VmvYhv). You don't need bluetooth remote control anymore, you can control robot, using [Android App Bluetooth Joystick](https://github.com/anoochit/android-robot-bt-joypad) instead, [get app from Google PlayStore](https://goo.gl/MF46JS).
 
 ##Bill of Materials
 
@@ -64,7 +64,7 @@ Flash spider_robot.ino to Arduino, Finish.
 
 ##How to play
 
-Clone joystick app build and install or [install app via Google PlayStore](https://goo.gl/MF46JS) to your mobile phone, open app, swipe and choose connect menu, choose robot bluetooth to connect.
+Clone joystick app build and install or [get app from Google PlayStore](https://goo.gl/MF46JS) to your mobile phone, open app, swipe and choose connect menu, choose robot bluetooth to connect.
 
 ![](https://lh3.googleusercontent.com/-a1jGQdI0nWk/VlglODy-uKI/AAAAAAAAV_8/Ckz4pwvxymg/s640-Ic42/DFG_2015-11-27-16-37-40.png)
 
