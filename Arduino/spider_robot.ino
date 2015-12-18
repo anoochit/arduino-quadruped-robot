@@ -24,6 +24,11 @@
 // modified by Regis for spider project, 2015-09-26
 // add remote control by HC-06 bluetooth module
 
+// modified by Anuchit for spider project, 2015-11-28
+// add remote control with android app for bluetooth spp
+// add test robot function for command mode
+// add sonar to measure distance between robot and obstacle
+
 
 /* Includes ------------------------------------------------------------------*/
 #include <Servo.h>    //to define and control servos
@@ -31,6 +36,8 @@
 // RegisHsu, remote control
 #include <SerialCommand.h>
 SerialCommand SCmd;   // The demo SerialCommand object
+// Anuchit, ultrasonic
+#include <NewPing.h>
 
 /* Servos --------------------------------------------------------------------*/
 //define 12 servos for 4 legs
@@ -77,6 +84,9 @@ const float turn_y0 = temp_b * sin(temp_alpha) - turn_y1 - length_side;
 /* Constants for Ultasonic------------------------------------------------------------- */
 #define TRIGGER_PIN  A1
 #define ECHO_PIN     A2
+#define MAX_DISTANCE 200
+boolean sonar_mode=false;
+NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
 /* ---------------------------------------------------------------------------*/
 
 /*
@@ -99,8 +109,9 @@ void setup()
   // w 4 x: left turn x step
   // w 5 x: hand shake x times
   // w 6 x: hand wave x times
-  // Add test mode
+  // Anuchit
   // w 7 0: test mode
+  // w 8 0: sonar mode
   SCmd.addCommand("w", action_cmd);
 
   SCmd.setDefaultHandler(unrecognized);
@@ -160,34 +171,32 @@ void servo_detach(void)
 void loop()
 {
   SCmd.readSerial();
+  check_obstacle(10);
 }
 
-void check_distance(long dist) {
-  long duration, distance;
-
-  // Clears the trigPin
-  digitalWrite(TRIGGER_PIN, LOW);
-  delayMicroseconds(2);
-
-  // Sets the trigPin on HIGH state for 10 micro seconds
-  digitalWrite(TRIGGER_PIN, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(TRIGGER_PIN, LOW);
-
-  // Reads the echoPin, returns the sound wave travel time in microseconds
-  duration = pulseIn(ECHO_PIN, HIGH);
-
-  // Calculating the distance
-  distance= duration*0.034/2;
-
-  // Prints the distance on the Serial Monitor
-  Serial.print("Distance: ");
-  //Serial.println(distance);
-
-  //Serial.println(distance);
-//  if ((distance<dist) && (distance!=0)) {
-//    step_back(2);
-//  }
+void check_obstacle(unsigned int dist) {
+  unsigned int ping_range;
+  if (sonar_mode==true) {
+    delay(50);
+    Serial.print("Ping: ");
+    Serial.print(sonar.ping_cm()); // Send ping, get distance in cm and print result (0 = outside set distance range)
+    Serial.println("cm");
+    ping_range=sonar.ping_cm();
+    if ((ping_range<dist) and (ping_range!=0)) {
+          // stand
+          Serial.println("Wake up");
+          stand();          
+          // wave
+          Serial.println("Shake");
+          hand_shake(2);
+          // turn
+          Serial.println("Turn");
+          turn_left(5);
+          // sit
+          Serial.println("Sit");
+          sit();
+    }
+  }
 }
 
 void do_test(void)
@@ -229,6 +238,7 @@ void do_test(void)
 // w 6 x: hand wave x times
 // Anuchit
 // w 7 0: test
+// w 8 0: sonar_mode
 #define W_STAND_SIT    0
 #define W_FORWARD      1
 #define W_BACKWARD     2
@@ -237,6 +247,7 @@ void do_test(void)
 #define W_SHAKE        5
 #define W_WAVE         6
 #define W_TEST         7
+#define W_SONAR        8
 void action_cmd(void)
 {
   char *arg;
@@ -291,7 +302,10 @@ void action_cmd(void)
     case W_TEST:
       Serial.println("Test");
       do_test();
-      break;      
+      break;   
+    case W_SONAR:
+      do_sonar();
+      break;          
     default:
       Serial.println("Error");
       break;
@@ -302,6 +316,21 @@ void action_cmd(void)
 void unrecognized(const char *command) {
   Serial.println("What?");
 }
+
+
+/*
+ * - sonar mode
+ */
+void do_sonar(void){
+  if (sonar_mode==false) {
+    Serial.println("Sonar ON");
+    sonar_mode=true;
+  } else {
+    Serial.println("Sonar OFF");
+    sonar_mode=false;
+  }
+}
+
 
 /*
  * - legs init

@@ -29,7 +29,7 @@ Arduino Quadruped Robot the project delivered from upstream project [RegisHsu](h
  * Pin header
  * Female Pin Header
  * M3 25mm screw x 4
- * M3 10mm screw x 4
+ * M3 10mm screw x 4ผ
  * M2 10mm screw x 4
 
 ##Assemply 
