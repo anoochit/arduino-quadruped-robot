@@ -6,7 +6,7 @@ New command mode (see source code for detail)
 
 * Test mode - test robot movement in bluetooth command
 * Sonar mode - wave your hand in front of ultrasonic sensor to wake up robot
-* Free walk mode - walking and avoid obstacle in 20cm
+* Free walk mode - walking and avoid obstacle in 20cm like robot vacuum
 
 ##Bill of Materials
 
