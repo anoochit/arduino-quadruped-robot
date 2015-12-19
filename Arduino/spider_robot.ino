@@ -28,6 +28,7 @@
 // add remote control with android app for bluetooth spp
 // add test robot function for command mode
 // add sonar to measure distance between robot and obstacle
+// add free walk mode use ultrasonic to avoid obstacle like vaccuum robot
 
 
 /* Includes ------------------------------------------------------------------*/
@@ -86,6 +87,7 @@ const float turn_y0 = temp_b * sin(temp_alpha) - turn_y1 - length_side;
 #define ECHO_PIN     A2
 #define MAX_DISTANCE 200
 boolean sonar_mode=false;
+boolean freewalk_mode=false;
 NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
 /* ---------------------------------------------------------------------------*/
 
@@ -112,6 +114,7 @@ void setup()
   // Anuchit
   // w 7 0: test mode
   // w 8 0: sonar mode
+  // w 9 0: freewalk mode
   SCmd.addCommand("w", action_cmd);
 
   SCmd.setDefaultHandler(unrecognized);
@@ -171,12 +174,17 @@ void servo_detach(void)
 void loop()
 {
   SCmd.readSerial();
-  check_obstacle(10);
+  if (freewalk_mode==true){
+    // free walk
+    freewalk(25);
+  } else if (sonar_mode==true) {
+    // sonar mode with manual control
+    check_obstacle(10);
+  } 
 }
 
 void check_obstacle(unsigned int dist) {
   unsigned int ping_range;
-  if (sonar_mode==true) {
     delay(50);
     Serial.print("Ping: ");
     Serial.print(sonar.ping_cm()); // Send ping, get distance in cm and print result (0 = outside set distance range)
@@ -196,8 +204,8 @@ void check_obstacle(unsigned int dist) {
           Serial.println("Sit");
           sit();
     }
-  }
 }
+
 
 void do_test(void)
 {
@@ -248,6 +256,7 @@ void do_test(void)
 #define W_WAVE         6
 #define W_TEST         7
 #define W_SONAR        8
+#define W_FREEWALK     9
 void action_cmd(void)
 {
   char *arg;
@@ -305,7 +314,10 @@ void action_cmd(void)
       break;   
     case W_SONAR:
       do_sonar();
-      break;          
+      break;    
+    case W_FREEWALK:
+      do_freewalk();
+      break;       
     default:
       Serial.println("Error");
       break;
@@ -317,6 +329,34 @@ void unrecognized(const char *command) {
   Serial.println("What?");
 }
 
+void freewalk(unsigned int dist) {
+  unsigned int ping_range;
+  ping_range=sonar.ping_cm();
+  // turn before 20cm
+  if ((ping_range<=dist) and (ping_range!=0)) {
+    // turn
+    Serial.println("Turn Left");
+    turn_left(5);
+  } else {
+    if (!is_stand())
+        stand();
+    Serial.println("Step forward");
+    step_forward(2);
+  }
+}
+
+/*
+ * - freewalk mode
+ */
+void do_freewalk(void) {
+  if (freewalk_mode==false) {
+    Serial.println("FreeWalk ON");
+    freewalk_mode=true;
+  } else {
+    Serial.println("FreeWalk OFF");
+    freewalk_mode=false;
+  }
+}
 
 /*
  * - sonar mode
