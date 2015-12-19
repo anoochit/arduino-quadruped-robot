@@ -1,6 +1,12 @@
 #Arduino Quadruped Robot
 
-Arduino Quadruped Robot the project delivered from upstream project [RegisHsu](http://goo.gl/H1vvwW)'s spider robot. This project has been redesigned in 3d printed parts eg: didn't glue servo holder with tibia and fumer, resize body to fit [12300 LIPO battery](http://goo.gl/VmvYhv). You don't need bluetooth remote control anymore, you can control robot, using [Android App Bluetooth Joystick](https://github.com/anoochit/android-robot-bt-joypad) instead, [get app from Google PlayStore](https://goo.gl/MF46JS).
+Arduino Quadruped Robot the project delivered from upstream project [RegisHsu](http://goo.gl/H1vvwW)'s spider robot. This project has been redesigned in 3d printed parts eg: didn't glue servo holder with tibia and fumer, resize body to fit [12300 LIPO battery](http://goo.gl/VmvYhv). You don't need to make a bluetooth remote control anymore but you can control robot using [Android App Bluetooth Joystick](https://github.com/anoochit/android-robot-bt-joypad) instead, [get app from Google PlayStore](https://goo.gl/MF46JS). 
+
+New command mode (see source code for detail)
+
+* Test mode - test robot movement in bluetooth command
+* Sonar mode - wave your hand in front of ultrasonic sensor to wake up robot
+* Free walk mode - walking and avoid obstacle in 20cm
 
 ##Bill of Materials
 
