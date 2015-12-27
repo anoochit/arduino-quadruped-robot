@@ -55,6 +55,7 @@ const float z_absolute = -28;
 const float z_default = -50, z_up = -30, z_boot = z_absolute;
 const float x_default = 62, x_offset = 0;
 const float y_start = 0, y_step = 40;
+const float y_default = x_default;
 /* variables for movement ----------------------------------------------------*/
 volatile float site_now[4][3];    //real-time coordinates of the end of each leg
 volatile float site_expect[4][3]; //expected coordinates of the end of each leg
@@ -230,6 +231,9 @@ void do_test(void)
   Serial.println("Hand shake");
   hand_shake(3);
   delay(2000);
+  Serial.println("Body dance");
+  body_dance(10);
+  delay(2000);    
   Serial.println("Sit");
   sit();
   delay(5000);
@@ -833,7 +837,65 @@ void hand_shake(int i)
   }
 }
 
+void head_up(int i)
+{
+  set_site(0, KEEP, KEEP, site_now[0][2] - i);
+  set_site(1, KEEP, KEEP, site_now[1][2] + i);
+  set_site(2, KEEP, KEEP, site_now[2][2] - i);
+  set_site(3, KEEP, KEEP, site_now[3][2] + i);
+  wait_all_reach();
+}
 
+void head_down(int i)
+{
+  set_site(0, KEEP, KEEP, site_now[0][2] + i);
+  set_site(1, KEEP, KEEP, site_now[1][2] - i);
+  set_site(2, KEEP, KEEP, site_now[2][2] + i);
+  set_site(3, KEEP, KEEP, site_now[3][2] - i);
+  wait_all_reach();
+}
+
+void body_dance(int i)
+{
+  float x_tmp;
+  float y_tmp;
+  float z_tmp;
+  float body_dance_speed = 2;
+  sit();
+  move_speed = 1;
+  set_site(0, x_default, y_default, KEEP);
+  set_site(1, x_default, y_default, KEEP);
+  set_site(2, x_default, y_default, KEEP);
+  set_site(3, x_default, y_default, KEEP);
+  wait_all_reach();
+  //stand();
+  set_site(0, x_default, y_default, z_default - 20);
+  set_site(1, x_default, y_default, z_default - 20);
+  set_site(2, x_default, y_default, z_default - 20);
+  set_site(3, x_default, y_default, z_default - 20);
+  wait_all_reach();
+  move_speed = body_dance_speed;
+  head_up(30);
+  for (int j = 0; j < i; j++)
+  {
+    if (j > i / 4)
+      move_speed = body_dance_speed * 2;
+    if (j > i / 2)
+      move_speed = body_dance_speed * 3;
+    set_site(0, KEEP, y_default - 20, KEEP);
+    set_site(1, KEEP, y_default + 20, KEEP);
+    set_site(2, KEEP, y_default - 20, KEEP);
+    set_site(3, KEEP, y_default + 20, KEEP);
+    wait_all_reach();
+    set_site(0, KEEP, y_default + 20, KEEP);
+    set_site(1, KEEP, y_default - 20, KEEP);
+    set_site(2, KEEP, y_default + 20, KEEP);
+    set_site(3, KEEP, y_default - 20, KEEP);
+    wait_all_reach();
+  }
+  move_speed = body_dance_speed;
+  head_down(30);
+}
 
 /*
   - microservos service /timer interrupt function/50Hz
