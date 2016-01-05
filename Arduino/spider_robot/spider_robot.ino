@@ -200,8 +200,8 @@ void check_obstacle(unsigned int dist) {
           Serial.println("Shake");
           hand_shake(2);
           // turn
-          Serial.println("Turn");
-          turn_left(5);
+          //Serial.println("Turn");
+          //turn_left(5);
           // sit
           Serial.println("Sit");
           sit();
