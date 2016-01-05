@@ -89,6 +89,7 @@ const float turn_y0 = temp_b * sin(temp_alpha) - turn_y1 - length_side;
 #define MAX_DISTANCE 200
 boolean sonar_mode=false;
 boolean freewalk_mode=false;
+unsigned int avoid_dist=25;
 NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
 /* ---------------------------------------------------------------------------*/
 
@@ -177,10 +178,10 @@ void loop()
   SCmd.readSerial();
   if (freewalk_mode==true){
     // free walk
-    freewalk(25);
+    freewalk(avoid_dist);
   } else if (sonar_mode==true) {
     // sonar mode with manual control
-    check_obstacle(10);
+    check_obstacle(avoid_dist);
   } 
 }
 
@@ -251,6 +252,8 @@ void do_test(void)
 // Anuchit
 // w 7 0: test
 // w 8 0: sonar_mode
+// Andrew
+// w 9 0: freewalk mode
 #define W_STAND_SIT    0
 #define W_FORWARD      1
 #define W_BACKWARD     2
@@ -317,9 +320,15 @@ void action_cmd(void)
       do_test();
       break;   
     case W_SONAR:
+      Serial.println("Sonar mode");
+      if (n_step>0)
+        avoid_dist=n_step;
       do_sonar();
       break;    
     case W_FREEWALK:
+      Serial.println("Freewalk mode");
+      if (n_step>0)
+        avoid_dist=n_step;
       do_freewalk();
       break;       
     default:
