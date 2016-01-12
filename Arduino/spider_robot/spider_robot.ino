@@ -114,9 +114,9 @@ void setup()
   // w 5 x: hand shake x times
   // w 6 x: hand wave x times
   // Anuchit
-  // w 7 0: test mode
-  // w 8 0: sonar mode
-  // w 9 0: freewalk mode
+  // w 7 0: sonar_mode
+  // w 8 0: freewalk mode
+  // w 9 0: leg init
   SCmd.addCommand("w", action_cmd);
 
   SCmd.setDefaultHandler(unrecognized);
@@ -250,10 +250,9 @@ void do_test(void)
 // w 5 x: hand shake x times
 // w 6 x: hand wave x times
 // Anuchit
-// w 7 0: test
-// w 8 0: sonar_mode
-// Andrew
-// w 9 0: freewalk mode
+// w 7 0: sonar_mode
+// w 8 0: freewalk mode
+// w 9 0: leg init
 #define W_STAND_SIT    0
 #define W_FORWARD      1
 #define W_BACKWARD     2
@@ -261,9 +260,9 @@ void do_test(void)
 #define W_RIGHT        4
 #define W_SHAKE        5
 #define W_WAVE         6
-#define W_TEST         7
-#define W_SONAR        8
-#define W_FREEWALK     9
+#define W_SONAR        7
+#define W_FREEWALK     8
+#define W_LEG_INIT     9
 void action_cmd(void)
 {
   char *arg;
@@ -315,9 +314,9 @@ void action_cmd(void)
       Serial.println("Hand wave");
       hand_wave(n_step);
       break;
-    case W_TEST:
-      Serial.println("Test");
-      do_test();
+    case W_LEG_INIT:
+      Serial.println("Legs init");
+      legs_init();
       break;   
     case W_SONAR:
       Serial.println("Sonar mode");
@@ -392,14 +391,12 @@ void do_sonar(void){
 void legs_init(void){
   
   //initialize all servos
-  for (int i = 0; i < 4; i++)
+  move_speed = 8;
+  for (int leg = 0; leg < 4; leg++)
   {
-    for (int j = 0; j < 3; j++)
-    {
-      servo[i][j].attach(servo_pin[i][j]);
-      delay(100);
-    }
+    set_site(leg, KEEP, 0, 90);
   }
+  wait_all_reach();
 }
 
 /*
